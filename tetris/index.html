@@ -1,0 +1,493 @@
+<html>
+<head>
+  <title>Tetris</title>
+</head>
+<body>
+<div width="100%">
+<div width="30%" style="float:left"><button onclick="start()">START</button></div>
+<div width="30%" style="float:left">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div width="30%" style="float:left" id="status">Game Over!</div>
+<!--audio id="audio">
+<source src="muzica2.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio-->
+</div>
+<br>
+<br>
+<canvas id="joc" width="1350" height="750"></canvas>
+
+<script>//<![CDATA[
+const canvas = document.getElementById("joc");
+const ctx = canvas.getContext("2d");
+
+t = [[]]
+
+celule = 15;
+marime = 45;
+margine = 1;
+margine2 = 3;
+culoare_cub = 1;
+culoare_gol = 0;
+deUnde=0
+laCat=0
+pornit = 0;
+milisecunde=1
+
+y = 0
+x = 0
+formaFigura = 0
+orientareFigura = 1
+
+input_directie = 0
+
+function init() {
+ 
+  t = []
+  for (let i = 0; i < celule; i++) {
+
+    t[i] = []
+    for (let j = 0; j < celule; j++) {
+      if (i == celule - 1 || j == 0 || j == celule-1) {
+        t[i][j] = culoare_cub
+      } else {
+        t[i][j] = culoare_gol
+      }
+    } // for
+  }           
+
+  document.getElementById("status").textContent = "Playing"
+  // document.getElementById("audio").play()
+} // init
+
+
+function afiseaza() {
+
+  for (let i = 1; i < t.length-1; i = i + 1) {
+    for (let j = 0; j < t.length-1; j = j + 1) {
+      if (t[j][i] == culoare_gol) {
+        ctx.fillStyle = 'rgb(120 120 120)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 1 ) {
+        ctx.fillStyle = 'rgb(0 0 200)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 2) {
+        ctx.fillStyle = 'rgb(190 0 200)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 3) {
+        ctx.fillStyle = 'rgb(190 180 0)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 4) {
+        ctx.fillStyle = 'rgb(0 180 0)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      } 
+      else if (t[j][i] == 4) {
+        ctx.fillStyle = 'rgb(112 79 12)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 5) {
+        ctx.fillStyle = 'rgb(186 61 115)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 6) {
+        ctx.fillStyle = 'rgb(240 245 95)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == 7) {
+        ctx.fillStyle = 'rgb(154 252 248)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+    } 
+  } // for
+
+  console.log("Am desenat")
+}
+
+function verificaSuprapune(x, y, culoare, suprapune) {
+
+  if (suprapune) { 
+  
+    if (t[x][y] != culoare_gol) {
+      return true;
+    } else {
+      return false;
+    } 
+  } else {
+
+    t[x][y] = culoare
+    return false
+  }
+}
+
+function verifica4(x1, y1, x2, y2, x3, y3, x4, y4, culoare, suprapune) {
+
+  if (verificaSuprapune(x1, y1, culoare, suprapune) 
+      || verificaSuprapune(x2, y2, culoare, suprapune)  
+      || verificaSuprapune(x3, y3, culoare, suprapune)
+      || verificaSuprapune(x4, y4, culoare, suprapune)) {
+
+    return true
+  } else { 
+    return false
+  }
+}
+
+function deseneazaCub(x, y, culoare, suprapune) {
+  
+  return verifica4(x, y, 
+                x+1, y, 
+                x, y+1, 
+                x+1, y+1, culoare, suprapune)
+}
+
+function liniePlina(linie){
+  cate=0
+  for(let i=0;i<celule;i++){
+    if (t[linie][i] != culoare_gol){
+      cate=cate+1
+    }
+  }
+
+  if(cate==celule){
+    cate=0
+    return true
+  } else {
+    return false
+  }
+}
+
+// Ce face functia gaseste_o_linie() ?
+// Gaseste o linie plina, si returneaza numarul liniei
+// Daca nu gaseste nicio linie plina, returneaza -1
+function gasesteOLinie(){
+  
+  for(let i=0;i<celule-1;i++){
+    if (liniePlina(i)==true){
+      return i
+    }
+  }
+  return -1
+}    
+function cadeColoana(linie,coloana){
+  for(let i=linie ;i>0;i--){    
+    t[i][coloana]=t[i-1][coloana]  
+  }
+  t[0][coloana]=0
+} 
+
+function stergeOLinie(linie) {
+  console.log("Sterg o linie=" + linie)
+  for(let j=1;j<celule-1;j++){
+    cadeColoana(linie,j)
+  } 
+}       
+
+function stergeLiniiPline(){
+
+  for(;;) {
+
+    linie = gasesteOLinie()  
+    if (linie == -1) {
+      return
+    }
+
+   	stergeOLinie(linie)
+  }
+}
+
+function deseneazaBara(x, y, orientare, culoare, suprapune) {
+
+  if (orientare == 1 || orientare == 3) {
+    return verifica4(x, y, x+1, y, x+2, y, x-1, y, culoare, suprapune)
+  } 
+  if (orientare == 2 || orientare == 4) {
+    return verifica4(x, y, x, y+1, x, y+2, x, y-1, culoare, suprapune)
+  }
+}
+function deseneazaL1(x, y, orientare, culoare, suprapune) {
+
+  if (orientare == 1 ) {
+    return verifica4(x, y, x+1, y+1, x-1, y, x+1, y, culoare, suprapune)
+  } 
+  if (orientare == 2 ) {
+    return verifica4(x, y, x-1, y+1, x, y-1, x, y+1, culoare, suprapune)
+  }
+  if(orientare ==3){
+    return verifica4(x, y, x-1, y-1, x-1, y, x+1, y, culoare, suprapune)
+  }
+  if(orientare ==4){
+    return verifica4(x, y, x, y+1, x, y-1, x+1, y-1, culoare, suprapune)
+  }
+}
+function deseneazaL2(x, y, orientare, culoare, suprapune) {
+
+  if (orientare == 1 ) {
+    return verifica4(x, y, x-1, y-1, x+1, y, x-1, y, culoare, suprapune)
+  } 
+  if (orientare == 2 ) {
+    return verifica4(x, y, x+1, y-1, x, y+1, x, y-1, culoare, suprapune)
+  }
+  if(orientare ==3){
+    return verifica4(x, y, x+1, y+1, x+1, y, x-1, y, culoare, suprapune)
+  }
+  if(orientare ==4){
+    return verifica4(x, y, x, y-1, x, y+1, x-1, y+1, culoare, suprapune)
+  }
+}
+
+function deseneazaZ1(x, y, orientare, culoare, suprapune) {
+  if (orientare == 1 || orientare == 3) {
+    return verifica4(x, y, x+1, y, x+1, y+1, x, y-1, culoare, suprapune)
+  } 
+  if (orientare == 2 || orientare == 4) {
+    return verifica4(x, y, x+1, y, x, y+1,x-1, y+1, culoare, suprapune)
+  }
+}
+
+function deseneazaZ2(x, y, orientare, culoare, suprapune) {
+  if (orientare == 1 || orientare == 3) {
+    return verifica4(x, y, x, y+1, x+1, y+1, x-1, y, culoare, suprapune)
+  } 
+  if (orientare == 2 || orientare == 4) {
+    return verifica4(x, y, x, y+1, x+1, y,x+1, y-1, culoare, suprapune)
+  }
+}
+
+function deseneazaT(x, y, orientare, culoare, suprapune) {
+
+  if (orientare == 1 ) {
+    return verifica4(x, y, x, y+1, x, y-1, x-1, y, culoare, suprapune)
+  } 
+  if (orientare == 3 ) {
+    return verifica4(x, y, x, y-1, x, y+1, x+1, y, culoare, suprapune)
+  }
+  if(orientare ==2){
+    return verifica4(x, y, x, y-1, x-1, y, x+1, y, culoare, suprapune)
+  }
+  if(orientare ==4){
+    return verifica4(x, y, x, y+1, x+1, y, x-1, y, culoare, suprapune)
+  }
+}
+
+
+function deseneaza(x, y, forma, orientare, culoare, suprapune) {
+  if (forma == 1) { // cub 
+
+    return deseneazaCub(x, y, culoare, suprapune)
+  } else if (forma == 2) { // bara
+
+    return deseneazaBara(x, y, orientare, culoare, suprapune)
+  } else if (forma == 3) { // figura L1
+    return deseneazaL1(x, y, orientare, culoare, suprapune)
+
+  } else if (forma == 4) {
+    return deseneazaL2(x, y, orientare, culoare, suprapune)
+                              
+  } else if (forma == 5) {
+    return deseneazaZ1(x, y, orientare, culoare, suprapune)
+      
+  } else if (forma == 6) {
+    return deseneazaZ2(x, y, orientare, culoare, suprapune)
+  
+  } else if (forma == 7) {
+    return deseneazaT(x, y, orientare, culoare, suprapune)
+  }
+  //laCat=laCat+1   
+  return false
+}
+
+function figuraNoua() {
+
+  stergeLiniiPline();
+
+  x = 1;
+  y = Math.floor(celule/2)-1
+  formaFigura = Math.floor(Math.random()*7) + 1
+  culoare_cub=formaFigura
+  orientareFigura = 1
+  input_directie = 0
+
+  if (deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, true) == true) {
+    // console.log("Game Over!")
+    document.getElementById("status").textContent = "Game Over!"
+    stop()
+  }
+
+  deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+}
+
+function rotesteOrientare(orientare, incotro) {	
+  orientare = orientare + incotro
+  if (orientare == 5) {
+    orientare = 1
+  }
+  
+  if (orientare == 0) {
+    orientare = 4
+  }
+  return orientare
+}
+
+function stangaDreapta() {
+
+  if (input_directie == 4) { // stanga
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
+    if (deseneaza(x, y-1, formaFigura, orientareFigura, culoare_gol, true) == false) {
+      y = y-1      
+      input_directie=0
+    }
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+  }
+
+  if (input_directie == 2) { // dreapta
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
+    if (deseneaza(x, y+1, formaFigura, orientareFigura, culoare_gol, true) == false) {
+      y = y+1      
+      input_directie=0
+    }
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+  }
+}
+
+function rotesteFigura(){
+  
+  if (input_directie == 1) { // roteste ceas
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
+    if (deseneaza(x, y, formaFigura, rotesteOrientare(orientareFigura, 1), culoare_gol, true) == false) {
+      orientareFigura = rotesteOrientare(orientareFigura,1) //1)      
+      input_directie=0
+    }
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+  }
+
+  if (input_directie == 3) {
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
+    if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
+   // x++
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+    figuraNoua()
+    //input_directie=0
+  }
+  else {    
+    x++
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+  }
+    input_directie=0
+  }
+  if (input_directie == 5) {
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
+    if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
+   // x++
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+    figuraNoua()
+    //input_directie=0
+  }
+  else {    
+    x++
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+  }
+    //input_directie=0
+  }
+
+
+
+
+}
+
+function cadeSiReinoieste(){
+
+  deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
+  if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
+
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+    figuraNoua()
+
+  } else {    
+    x++
+    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+  }
+}
+
+function gandeste() {
+  
+  stangaDreapta()
+  rotesteFigura()
+
+  laCat=laCat+1
+  if(laCat%80==0){
+    cadeSiReinoieste()
+  }
+}   
+
+function pas() {
+
+  gandeste()
+  afiseaza()
+}
+
+function startGame() {
+
+  init()
+  figuraNoua()
+  afiseaza()
+}
+
+function start() {
+
+  if (pornit == 0) {
+    startGame()
+    pornit=1
+    interval=setInterval(pas, milisecunde)
+  }
+}
+
+function stop() { 
+
+  if (pornit == 1) {
+    clearInterval(interval)
+    pornit = 0;
+  }
+}
+
+document.onkeydown = function (e) {
+  console.log("keydown: " + e.keyCode)
+  
+  if (e.keyCode==87) {
+   
+    input_directie = 1 // rotire ceas
+  } else if(e.keyCode==68) {
+    
+    input_directie = 2  // dreapta
+  } else if(e.keyCode==83) {
+    
+    input_directie = 3 // rotire anti-ceas
+  } else if(e.keyCode==65) {
+    
+    input_directie = 4 // stanga
+  } else if(e.keyCode==32) {
+    input_directie=5
+  }
+
+  //console.log("directie="+input_directie)
+}
+
+init()
+afiseaza()
+afiseaza()
+
+//]]>                                                                     
+</script>
+</body>
+</html>
