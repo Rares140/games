@@ -1,0 +1,219 @@
+<html>
+<head>
+  <title>Reey</title>
+</head>
+<body>
+<canvas id="joc" width="1350" height="750"></canvas>
+
+<script>//<![CDATA[
+
+onclick = (event) => {c(event)}
+const canvas = document.getElementById("joc");
+const ctx = canvas.getContext("2d");
+
+pornit = 0;
+celule= 19;
+marime = 40;
+margine = 1.3;
+margine2 =3.5
+smax = 0        
+directie = 2;
+directie2 = 2;
+noua_directie = directie;
+noua_directie2 = directie2;
+
+capx = 2
+capy = 4
+cap2x = 5
+cap2y = 4
+
+culoare_sarpe = 'green'
+ctx.strokeStyle = 'black'
+
+t=[[]]
+
+function init() {
+ 
+  t = []
+  for (let i = 0; i < celule; i++) {
+
+    t[i] = []
+    for (let j = 0; j < celule; j++) {
+      t[i][j] = 1//Math.floor(Math.random() * 2)
+        if(i==celule-1){
+        t[celule-1][j]=-1
+      }
+     
+      t[0][j]=-1
+      //if(i == celule-1 ){
+     //   t[i][j]=-1
+     // }
+     // if(j == celule-1 ){
+     //   t[i][j]=-1
+    //   }      
+    t[i][0] = -1;
+    t[i][celule -1] =- 1;
+  } // for
+  }
+  t[0][0]=-2
+  t[celule-1][0]=-2
+  t[0][celule-1]=-2
+  t[celule-1][celule-1]=-2
+
+  for(let j=0;j<t.length;j++){
+  for(let i=0;i<t.length;i++){
+    xx=Math.floor(Math.random() * t.length);
+    yy=Math.floor(Math.random() * t.length);
+    if (t[xx][yy]==-1){
+      console.log("sa apasat un buton verde")            
+    
+      if (xx==0 || xx==t.length-1 ) {
+        for(let j=1;j<t.length-1;j++){
+          t[yy][j] = 1 - t[yy][j]
+        }
+      	console.log("am mutat") 
+   	  }
+
+    	if (yy==0 || yy==t.length-1 ) {
+     	  for(let j=1;j<t.length-1;j++){
+      	  t[j][xx] = 1 - t[j][xx]        
+     	  }
+     	  console.log("am mutat") 
+   	  }                         
+ 	  }
+ } } 
+} // init
+
+
+function afiseaza() {
+
+  for (let i = 0; i < t.length; i = i + 1) {
+    for (let j = 0; j < t.length; j = j + 1) {
+      if (t[j][i] == -1) {
+        ctx.fillStyle = 'rgb(0, 102, 34)'
+        ctx.fillRect(i * marime + margine2, j * marime + margine2, marime - margine2 * 2, marime - margine2 * 2);
+        //ctx.strokeRect(i * marime, j * marime, marime, marime);
+      }
+      else if (t[j][i] == -3) {
+        ctx.fillStyle = 'rgb(230, 230, 0)'
+        ctx.fillRect(i * marime + margine2, j * marime + margine2, marime - margine2 * 2, marime - margine2 * 2);
+        //ctx.strokeRect(i * marime, j * marime, marime, marime);
+      } 
+      else if (t[j][i] == 0) {
+        ctx.fillStyle = 'rgb(160, 150, 150)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      } 
+      else if (t[j][i] == 1) {       
+        ctx.fillStyle = 'rgb(55, 89, 102)'
+        ctx.fillRect(i * marime + margine, j * marime + margine, marime - margine * 2, marime - margine * 2)
+        ctx.strokeRect(i * marime, j * marime, marime, marime);
+      } 
+          
+                                                        
+    } 
+  } // for
+
+  console.log("Am desenat")
+}
+
+
+function c(event){
+  xx=Math.floor((event.pageX-10)/marime)
+  yy=Math.floor((event.pageY-10)/marime)
+
+  
+
+      console.log("sa apasat un buton "+event.pageX +" x" +event.pageY+" y")            
+    if (t[xx][yy]==-1){
+
+    if (xx==0||xx==t.length-1 ) {
+      for(let j=1;j<t.length-1;j++){
+        t[yy][j] = 1 - t[yy][j]
+      }
+      console.log("am mutat ") 
+    }
+
+    if (yy==0||yy==t.length-1 ) {
+      for(let j=1;j<t.length-1;j++){
+        t[j][xx] = 1 - t[j][xx]        
+      }
+      console.log("am mutat") 
+    }                         
+  }
+  afiseaza()
+}
+
+                                                                                
+function reset() {
+  stop();
+  init();
+  afiseaza()
+}
+
+
+function start(millis) {
+  if (pornit == 0) {
+    interval = setInterval(pas, millis)
+    pornit = 1
+    console.log("Started interval with millis=" + millis);
+  } else {
+    clearInterval(interval)
+    interval = setInterval(pas, millis4)
+    pornit = 1
+  }
+}
+
+
+function stop() {
+  if (pornit == 1) {
+    clearInterval(interval)
+    pornit = 0
+    console.log("Cleared interval.");
+  }
+  if (pornit==0){
+    pornit=1
+  }
+}
+
+
+document.onkeydown = function (e) {
+  console.log("keydown: " + e.keyCode)
+
+  if (e.keyCode == 87 && directie != 3) {
+    noua_directie = 1
+  }
+  else if (e.keyCode == 68 && directie != 4) {
+    noua_directie = 2
+  }
+  else if (e.keyCode == 83 && directie != 1) {
+    noua_directie = 3
+  }
+  else if (e.keyCode == 65 && directie != 2) {
+    noua_directie = 4
+  }
+
+
+  if (e.keyCode == 75 && directie2 != 3) {
+    noua_directie2 = 1
+  }
+  else if (e.keyCode == 74 && directie2 != 4) {
+    noua_directie2 = 2
+  }
+  else if (e.keyCode == 73 && directie2 != 1) {
+    noua_directie2 = 3
+  }
+  else if (e.keyCode == 76 && directie2 != 2) {
+    noua_directie2 = 4
+  }
+}
+
+
+init()
+afiseaza()
+
+//]]>                                                                     
+</script>
+
+</body>
+</html>
