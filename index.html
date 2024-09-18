@@ -1,0 +1,266 @@
+<html>
+<body>
+
+<button onclick="easy()">EASY</button>
+<button onclick="normal()">NORMAL</button>
+<button onclick="hard()">HARD</button>
+<button onclick="hardest()">HARDEST</button>
+<button onclick="stop()">STOP</button>
+
+<canvas id="joc" width="1350" height="750"></canvas>
+
+<script>
+//<![CDATA[
+
+const canvas = document.getElementById("joc");
+const ctx = canvas.getContext("2d");
+pornit = 0;
+marime = 20;
+margine = 1;
+celule = 37;
+vv=200
+directie = 2
+smax=0
+pornit=0
+culoare_sarpe = 'green'
+ctx.strokeStyle = 'black';	   
+													                     
+t = [ 
+  	 [-1, -1, -1, -1 ,-1 ,-1 ,-1 ,-1 ,-1 , -1 ], 
+
+     [-1 , 0 , 0 ,  0 , 0 , 0 , 0,  0,  0, -1 ],
+ 
+     [-1,  0 , 0 ,  0,  0,  0,  0,  0,  0, -1 ],
+    
+     [-1,  0 ,  0, -2,  0,  0,  0,  0,  0, -1 ],
+
+     [-1,  0 ,  0,  0,  0,  0,  0,  0,  0, -1 ],
+
+     [-1,  0 ,  0,  0,  0,  0,  0,  0,  0, -1 ],
+
+     [-1,  0 ,  1,  2,  3,  4,  5,  0,  0, -1 ],
+  
+     [-1,  0 ,  0,  0,  0,  0,  0,  0,  0, -1 ],
+
+     [-1,  0 ,  0,  0,  0,  0,  0,  0,  0, -1 ],
+
+     [-1, -1 , -1, -1, -1, -1, -1, -1, -1, -1 ]   
+
+     ]
+
+
+function init() {
+  t = []
+  for (let i=0;i<celule; i++ ) {
+    t[i] = []
+    for (let j=0;j<celule; j++) {
+      if (i==0 || i==celule-1) {
+        t[i][j] = -1;
+      } else {     
+	      t[i][j] = 0;
+			}
+    }
+    t[i][0] = -1;
+    t[i][celule-1] = -1;
+  }
+  t[2][2] = 1;
+  t[2][3] = 2;
+  t[2][4] = 3;
+  directie = 2;
+  noua_directie = directie;
+  culoare_sarpe = 'green'
+  smax = 3;
+  fruct_nou();
+}
+
+
+function afiseaza() { 
+  for(let i=0;i<t.length;i=i+1){
+  for(let j=0;j<t.length;j=j+1){
+    if(t[j][i]==-1){
+      ctx.fillStyle = 'red'      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2);
+      ctx.strokeRect(i*marime,j*marime,marime,marime);
+    } else if(t[j][i]==0){ 
+      ctx.fillStyle='white'
+     // ctx.strokeRect(i*marime,j*marime,marime,marime)      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2)
+    } // if
+      else if(t[j][i]==-2){
+      ctx.fillStyle='pink'
+     // ctx.strokeRect(i*marime,j*marime,marime,marime)      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2)
+    } 
+    else if(t[j][i]>0 && t[j][i]<smax){
+      ctx.fillStyle = culoare_sarpe
+       //ctx.strokeRect(i*marime,j*marime,marime,marime)      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2)
+    } 
+    else if (t[j][i] == smax) {
+      ctx.fillStyle = 'rgb(0 65 0)'
+       //ctx.strokeRect(i*marime,j*marime,marime,marime)
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2)
+    }
+  } // for
+  }
+}
+
+
+init()
+afiseaza()
+
+function fruct_nou(){  
+  for(let i=0;i<2; ){   
+    fx=Math.floor(Math.random()*t.length)
+    fz=Math.floor(Math.random()*t.length)
+    console.log("fruct nou " + fx + " " + fz);
+
+    if(t[fx][fz] == 0){
+      t[fx][fz]=-2
+      i=2
+    }     
+  }
+}
+ 
+function misca(){
+  directie = noua_directie;
+  console.log("misca cu  directie: " +  directie);
+
+  for(let z=0;z<t.length;z=z+1){
+    for(let x=0;x<t.length;x=x+1){    
+      
+      if (t[x][z]==smax) {
+        
+        nx = x;
+        nz = z; 
+        
+        if( directie==1){ // sus
+          nx = x-1;
+        }
+        else if( directie==2){ // dreapta
+          nz = z+1;
+        }
+        else if( directie==3){ // jos
+          nx = x+1
+        }
+        else if( directie==4){ // stanga
+          nz = z-1;
+        }
+
+        if (t[nx][nz] == -1 || t[nx][nz] > 0) {
+          omoara();
+        }
+        else if(t[nx][nz]== -2){
+          t[nx][nz]=smax+1
+          smax=smax+1
+          fruct_nou() 
+        }  
+        else {
+          for(let s=0;s<t.length;s=s+1){
+          for(let d=0;d<t.length;d=d+1){
+            if(t[d][s]>=1 && t[d][s]<=smax){
+              t[d][s]=t[d][s]-1                       
+            }
+          }}    
+          t[nx][nz] = smax;
+        }
+
+        x = t.length+1;
+        z = t.length+1;
+      }
+    }
+  } // for
+}
+
+
+function omoara(){
+  stop();
+
+  color = 100;
+  interval = setInterval(function() {
+    color++;
+    culoare_sarpe = '#' + color.toString(16) + color.toString(16) + color.toString(16);
+    afiseaza();
+    if (color == 255) {
+      clearInterval(interval);
+      culoare_sarpe = 'green';
+    }
+  },
+  10);
+}
+
+function reset() {
+  stop();
+  init();
+  afiseaza()
+}
+
+function start(millis) {
+  if(pornit==0) {
+    interval=setInterval(pas, millis)
+    pornit=1
+    console.log("Started interval with millis=" + millis);
+  } else {
+    clearInterval(interval)
+    interval=setInterval(pas, millis)
+    pornit=1  
+  }
+}
+
+function normal() {
+  reset()
+  start(440)
+}
+
+function easy() {
+  reset()
+  start(1000)
+}
+
+function hard() {
+  reset()
+  start(150)
+}
+
+function hardest() {
+  reset()
+  start(75)
+}
+
+function stop() {
+  if(pornit==1){
+    clearInterval(interval)
+    pornit=0
+    console.log("Cleared interval.");
+  }
+}
+
+function pas() {
+  //fruct_nou()
+  misca()
+  afiseaza()
+}
+
+
+document.onkeydown = function (e) {
+  // console.log("keydown: " + e.keyCode)
+  if(e.keyCode==87 && directie != 3){  
+    noua_directie = 1
+  }
+  else if(e.keyCode==68 && directie != 4){
+    noua_directie = 2
+  }
+  else if(e.keyCode==83 && directie != 1){
+    noua_directie = 3
+  }
+  else if(e.keyCode==65 && directie != 2){
+    noua_directie = 4
+  }
+ // directie=noua_directie
+}  
+
+
+//]]>                                                                     
+</script>
+</body>
+</html>
