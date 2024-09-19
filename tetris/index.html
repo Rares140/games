@@ -112,7 +112,7 @@ function afiseaza() {
     } 
   } // for
 
-  console.log("Am desenat")
+  //console.log("Am desenat")
 }
 
 function verificaSuprapune(x, y, culoare, suprapune) {
@@ -248,6 +248,7 @@ function deseneazaL2(x, y, orientare, culoare, suprapune) {
 }
 
 function deseneazaZ1(x, y, orientare, culoare, suprapune) {
+
   if (orientare == 1 || orientare == 3) {
     return verifica4(x, y, x+1, y, x+1, y+1, x, y-1, culoare, suprapune)
   } 
@@ -257,6 +258,7 @@ function deseneazaZ1(x, y, orientare, culoare, suprapune) {
 }
 
 function deseneazaZ2(x, y, orientare, culoare, suprapune) {
+
   if (orientare == 1 || orientare == 3) {
     return verifica4(x, y, x, y+1, x+1, y+1, x-1, y, culoare, suprapune)
   } 
@@ -304,7 +306,7 @@ function deseneaza(x, y, forma, orientare, culoare, suprapune) {
   } else if (forma == 7) {
     return deseneazaT(x, y, orientare, culoare, suprapune)
   }
-  //laCat=laCat+1   
+     
   return false
 }
 
@@ -375,7 +377,6 @@ function rotesteFigura(){
   if (input_directie == 3) {
     deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
     if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
-   // x++
     deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
     figuraNoua()
     //input_directie=0
@@ -389,7 +390,6 @@ function rotesteFigura(){
   if (input_directie == 5) {
     deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
     if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
-   // x++
     deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
     figuraNoua()
     //input_directie=0
@@ -400,9 +400,6 @@ function rotesteFigura(){
   }
     //input_directie=0
   }
-
-
-
 
 }
 
@@ -462,7 +459,8 @@ function stop() {
 }
 
 document.onkeydown = function (e) {
-  console.log("keydown: " + e.keyCode)
+
+  //console.log("keydown: " + e.keyCode)
   
   if (e.keyCode==87) {
    
