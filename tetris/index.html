@@ -32,6 +32,7 @@ deUnde=0
 laCat=0
 pornit = 0;
 milisecunde=1
+viteza_coborare = 200
 
 y = 0
 x = 0
@@ -231,21 +232,24 @@ function deseneazaL1(x, y, orientare, culoare, suprapune) {
     return verifica4(x, y, x, y+1, x, y-1, x+1, y-1, culoare, suprapune)
   }
 }
+
+
 function deseneazaL2(x, y, orientare, culoare, suprapune) {
 
-  if (orientare == 1 ) {
-    return verifica4(x, y, x-1, y-1, x+1, y, x-1, y, culoare, suprapune)
+  if (orientare == 1) {
+    return verifica4(x, y, x-1, y+1, x+1, y, x-1, y, culoare, suprapune)
   } 
-  if (orientare == 2 ) {
-    return verifica4(x, y, x+1, y-1, x, y+1, x, y-1, culoare, suprapune)
+  if (orientare == 2) {
+    return verifica4(x, y, x-1, y-1, x, y+1, x, y-1, culoare, suprapune)
   }
-  if(orientare ==3){
-    return verifica4(x, y, x+1, y+1, x+1, y, x-1, y, culoare, suprapune)
+  if (orientare == 3) {
+    return verifica4(x, y, x+1, y-1, x+1, y, x-1, y, culoare, suprapune)
   }
-  if(orientare ==4){
-    return verifica4(x, y, x, y-1, x, y+1, x-1, y+1, culoare, suprapune)
+  if (orientare == 4) {
+    return verifica4(x, y, x, y+1, x, y-1, x+1, y+1, culoare, suprapune)
   }
 }
+
 
 function deseneazaZ1(x, y, orientare, culoare, suprapune) {
 
@@ -266,6 +270,7 @@ function deseneazaZ2(x, y, orientare, culoare, suprapune) {
     return verifica4(x, y, x, y+1, x+1, y,x+1, y-1, culoare, suprapune)
   }
 }
+
 
 function deseneazaT(x, y, orientare, culoare, suprapune) {
 
@@ -330,6 +335,7 @@ function figuraNoua() {
   deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
 }
 
+
 function rotesteOrientare(orientare, incotro) {	
   orientare = orientare + incotro
   if (orientare == 5) {
@@ -341,6 +347,7 @@ function rotesteOrientare(orientare, incotro) {
   }
   return orientare
 }
+
 
 function stangaDreapta() {
 
@@ -363,6 +370,7 @@ function stangaDreapta() {
   }
 }
 
+
 function rotesteFigura(){
   
   if (input_directie == 1) { // roteste ceas
@@ -377,30 +385,28 @@ function rotesteFigura(){
   if (input_directie == 3) {
     deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
     if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
-    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
-    figuraNoua()
+      deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+      figuraNoua()
     //input_directie=0
-  }
-  else {    
-    x++
-    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
-  }
+    } else {
+      x++
+      deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+    }
     input_directie=0
   }
+
   if (input_directie == 5) {
     deseneaza(x, y, formaFigura, orientareFigura, culoare_gol, false)
     if (deseneaza(x+1, y, formaFigura, orientareFigura, culoare_gol, true) == true) {
-    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
-    figuraNoua()
+      deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+      figuraNoua()
+      //input_directie=0
+    } else {    
+      x++
+      deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
+    }
     //input_directie=0
   }
-  else {    
-    x++
-    deseneaza(x, y, formaFigura, orientareFigura, culoare_cub, false)
-  }
-    //input_directie=0
-  }
-
 }
 
 function cadeSiReinoieste(){
@@ -423,7 +429,7 @@ function gandeste() {
   rotesteFigura()
 
   laCat=laCat+1
-  if(laCat%80==0){
+  if (laCat%viteza_coborare == 0) {
     cadeSiReinoieste()
   }
 }   
