@@ -1,0 +1,110 @@
+<html>
+<body>
+
+<button onclick="stop()">STOP</button>
+<button onclick="start()">START</button>
+<button onclick="reset()">RESET</button>
+<button onclick="vminus()">+</button>
+<button onclick="vplus()">-</button>
+
+<canvas id="joc" width="1350" height="750"></canvas>
+
+<script src="gl.js"></script>
+
+<script>
+//<![CDATA[
+
+const canvas = document.getElementById("joc");
+const ctx = canvas.getContext("2d");
+pornit=0;
+marime = 40;
+margine = 1;
+vv=200
+canvas.addEventListener("click", onClick, false);
+ctx.strokeStyle = 'black';	   
+			    
+function af(){
+ 
+  for(i=0;i<t.length;i=i+1){
+  for(j=0;j<t.length;j=j+1){
+    if(t[j][i]==1){
+      ctx.fillStyle = 'yellow';      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2);
+      ctx.strokeRect(i*marime,j*marime,marime,marime);
+    } else { 
+      ctx.fillStyle='rgb(175, 175, 175)'
+      ctx.strokeRect(i*marime,j*marime,marime,marime)      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2)
+    } // if
+  }
+  } // for
+
+} // af ()
+
+af()
+function pas(){
+  gandire()
+  af()
+}
+
+function stop() {
+  if(pornit==1){              
+    clearInterval(interval);
+    pornit=0
+    console.log("pornit: " + pornit)
+  }
+}
+
+function start() {
+  if(pornit==0){    
+    pornit=1
+    af()
+    interval = setInterval(pas, vv);  
+    console.log("pornit=" + pornit + " vv=" + vv);                  
+  }
+}                              
+
+function onClick(e) {   
+  console.log("x=" + e.pageX + " y=" + e.pageY);
+  p=Math.floor((e.pageX-8)/marime);
+  l=Math.floor((e.pageY-30)/marime);
+  console.log(p + "  " + l)
+
+  if(t[l][p] == 1) {
+    t[l][p] = 0
+  } else {
+    t[l][p] = 1
+  }
+
+  af()
+    
+} // onClick 
+function reset(){
+  for(g=0;g<t.length;g=g+1){
+    for(u=0;u<t.length;u=u+1){
+       t[u][g]=0
+       af()
+    }  
+  }
+}
+
+function vminus(){
+  vv=vv-100
+  if(pornit==1) {
+    clearInterval(interval)
+    interval = setInterval(pas, vv);  
+  }
+}
+
+function vplus() {
+  vv=vv+100
+  if(pornit==1) {
+    clearInterval(interval)
+    interval = setInterval(pas, vv);  
+  }
+}
+
+//]]>
+</script>
+</body>
+</html>
