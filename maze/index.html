@@ -1,0 +1,338 @@
+<html>
+<body>
+
+<button onclick="start()">START POINT</button>
+<button onclick="finish()">FINISH POINT</button>
+<button onclick="perete()">PERETE</button> 
+<button onclick="rand()">DRUM RANDOM</button>
+<button onclick="drum()">AFISEAZA DRUM</button>
+<button onclick="reset()">RESET</button>
+
+<canvas id="joc" width="1350" height="750"></canvas>
+
+<script>
+//<![CDATA[
+
+const canvas = document.getElementById("joc");
+const ctx = canvas.getContext("2d");
+pornit=0;
+marime = 30;
+margine = 1;
+vv=200
+cat=0
+cat2=2
+celule=10
+canvas.addEventListener("click", onClick, false);
+ctx.strokeStyle = 'black';
+capete=[[0,0]]
+
+t=[
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  ]
+
+x1=0
+y1=0
+
+x2=t.length-1
+y2=t.length-1
+
+af()			    
+function af(){
+ 
+  for(i=0;i<t.length;i=i+1){
+  for(j=0;j<t.length;j=j+1){
+    if(t[j][i]==1){
+      ctx.fillStyle = 'red';      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2);
+      ctx.strokeRect(i*marime,j*marime,marime,marime);
+    }else if(j==x1&&i==y1){
+      ctx.fillStyle = 'rgb(20 20 170)';      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2);
+      ctx.strokeRect(i*marime,j*marime,marime,marime);
+    } 
+    else if(j==x2&&i==y2){
+      ctx.fillStyle = 'rgb(50 50 200)';      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2);
+      ctx.strokeRect(i*marime,j*marime,marime,marime);      
+    }
+    else if(t[j][i]==3){
+      ctx.fillStyle = 'yellow';      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2);
+      ctx.strokeRect(i*marime,j*marime,marime,marime);
+    }
+
+    else if(t[j][i]==0) { 
+      ctx.fillStyle='rgb(175, 175, 175)'
+      ctx.strokeRect(i*marime,j*marime,marime,marime)      
+      ctx.fillRect(i*marime+margine,j*marime+margine,marime-margine*2,marime-margine*2)
+    } // if
+  }
+  } // for
+
+} // af ()
+                          
+
+function rand(){
+
+  for(f=0;f<Math.floor(t.length*t.length/4);f++) {
+    i=Math.floor(Math.random()*t.length)
+    j=Math.floor(Math.random()*t.length)
+   // if(i==0||j==0||
+    t[i][j]=1
+  }
+  t[0][0]=0
+  t[t.length-1][t.length-1]=0
+  af()
+}
+
+
+function adauga_capat(capatX, capatY, cat2, u) {
+  //console.log("Am adaugat un cap la x=" + capatX + " y=" + capatY + " cat2=" + cat22+ " nivel u=" + u)
+  capete.length++
+  capete[capete.length-1] = [capatX, capatY]
+  t[capatX][capatY] = cat2
+}
+
+
+function mergi(){
+  for(let u=0;u<capete.length;u++){                  
+    cand=0
+
+      //  console.log("u=" + u + "   capete=" + capete)
+       // console.table(t)
+        i = capete[u][0]
+        j = capete[u][1]
+        console.log("j="+j)
+        if (t[i][j] == 0) {
+          t[i][j] = cat2
+        }
+        cat2 = t[i][j] + 1
+
+        // jos
+        if(i<t.length-1 && t[i+1][j]==0 && cand==0) {
+          capete[u][0] += 1          
+          cand=1
+          t[i+1][j] = cat2
+        }
+
+        // dreapta
+        if(j<t.length-1 && t[i][j+1]==0 && cand==0){
+          capete[u][1] += 1
+          cand=1
+          t[i][j+1] = cat2
+        }
+        if((j<t.length-1) && t[i][j+1]==0 && cand==1){
+          adauga_capat(i, j+1, cat2, u)
+        }
+
+        // stanga
+        if(i>0 && t[i-1][j]==0 && cand==0){
+          capete[u][0]--
+          cand=1
+          t[i-1][j] = cat2
+        }
+        if(i>0 && t[i-1][j]==0 && cand==1){
+          adauga_capat(i-1, j, cat2, u)
+        }
+
+
+        // sus
+        if(j>0 && t[i][j-1]==0 && cand==0){
+          capete[u][1]--
+          cand=1
+          t[i][j-1] = cat2
+        }
+        if(j>0 && t[i][j-1]==0 && cand==1){
+          adauga_capat(i, j-1, cat2, u)
+        }
+      }
+}
+
+
+function gaseste(x,y){
+
+  if(x<t.length-1 && t[x+1][y]==t[x][y]-1000000000000001){
+    x=x+1
+    t[x][y]=t[x][y]+1000000000000000
+    return [x,y]
+  }
+  
+  if(y<t.length-1&&t[x][y+1]==t[x][y]-1000000000000001){
+    y=y+1
+    t[x][y]=t[x][y]+1000000000000000
+    return [x,y]
+  }
+
+  if(x>0&&t[x-1][y]==t[x][y]-1000000000000001){
+    x=x-1
+    t[x][y]=t[x][y]+1000000000000000
+    return [x,y]
+  }
+
+  if(y>0&&t[x][y-1]==t[x][y]-1000000000000001){
+    y=y-1
+    t[x][y]=t[x][y]+1000000000000000
+    return [x,y]
+  }
+
+  return [0,0]
+}
+
+function afiseaza_drum(){
+
+  i=x2
+  j=y2
+  t[i][j]=t[i][j]+1000000000000000
+  f=0
+
+  for(;;) {
+    xy = gaseste(i,j)
+    i=xy[0]
+    j=xy[1]
+    if (i==x1 && j==y1) {
+      break;
+      console.log("am terminat")
+    }
+  }
+
+  for(let k=0;k<t.length;k++){
+    for(let l=0;l<t.length;l++){
+      if(t[k][l]<1000000000000000 && t[k][l]!=1){
+        t[k][l]=0
+      }
+
+      if(t[k][l]>1000000000000000){
+        t[k][l]=3
+      }
+    }
+  }
+}
+
+function drum(){
+for(let i=0;i<1;){
+  mergi()
+  
+  for(u=0;u<capete.length;u++){
+    if(t[capete[u][0]][capete[u][1]] == t[x2][y2]){
+      i=1
+      console.table(t)
+      afiseaza_drum()
+      console.table(t)
+    }
+  }
+}
+af()
+}
+
+
+af()
+
+function start(){   
+  cat=-1
+  af()
+}
+function finish(){
+  cat=-2
+  af()
+}
+function perete(){
+  cat=1
+  af()
+}
+
+
+
+function onClick(e) {   
+  //console.log("x=" + e.pageX + " y=" + e.pageY);
+  p=Math.floor((e.pageX-8)/marime);
+  l=Math.floor((e.pageY-30)/marime);
+  console.log(p + "  " + l + "  " + cat)
+  if(cat!=-1&&cat!=-2){
+  t[l][p]=cat-t[l][p]
+  }
+  console.log("t[l][p]="+t[l][p])
+  if(cat==-1){
+    t[x1][y1]=0     
+    x1=l
+    y1=p
+    capete=[[x1,y1]]
+  }
+  if(cat==-2){
+  t[x2][y2]=0
+    x2=l
+    y2=p
+  }
+  af()   
+} // onClick 
+
+
+function reset(){
+  for(g=0;g<t.length;g=g+1){
+    for(u=0;u<t.length;u=u+1){
+       t[u][g]=0
+       //af()
+    }  
+  }
+
+t=[
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  ]
+
+  x1=0
+  y1=0
+  x2=t.length-1
+  y2=t.length-1
+  capete=[[x1,y1]]
+  af()
+  cat2=2
+  cat=0
+}
+
+//]]>
+</script>
+</body>
+</html>
