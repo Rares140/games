@@ -411,7 +411,7 @@ async function afiseazaInternal3(t) {
     p1=lineMiddle(t[surf[i][0]],t[surf[i][2]])
     p2=vectorAddPoint(vectorMulScalar(vn,100),p1)
 
-    if(norm2[i][2]>0){
+    if(norm2[i][2]<0){
       let color = 'black'
       lineColor(t,surf[i][0],surf[i][1], color)
       lineColor(t,surf[i][1],surf[i][2], color)
