@@ -225,7 +225,7 @@ function calculateNormals(tt,spf,nrm){
     v1=calculateVector(p1,p2)
     v2=calculateVector(p2,p3)
 
-    cp=vectorProduct(v1,v2)
+    cp=vectorProduct(v2,v1)
     nrm[i] = vectorNormalize(cp)
   }
 }
